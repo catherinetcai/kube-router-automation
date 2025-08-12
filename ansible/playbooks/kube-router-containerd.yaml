@@ -58,10 +58,16 @@
     - setup
     - checks
   tasks:
-    - name: Check for Hosts to be up
+    - name: Check for Hosts to be up via SSM
+      import_role:
+        name: common
+        tasks_from: wait_for_ssm
+      when: ansible_connection == "aws_ssm"
+    - name: Check for Hosts to be up via SSH
       import_role:
         name: common
         tasks_from: wait_for_ssh
+      when: ansible_connection != "aws_ssm"
 
 - name: Ensure IPv6 NAT Config
   hosts: localhost
@@ -152,7 +158,7 @@
       import_role:
         name: aws
         tasks_from: install_provider
-      when: ansible_system_vendor == "Amazon EC2"
+      when: ansible_connection == "aws_ssm"
 
 - name: Join Cluster with Remaining Nodes
   hosts: workers

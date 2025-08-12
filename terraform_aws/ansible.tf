@@ -5,5 +5,5 @@ resource "local_file" "ansible_inventory" {
       region = var.region
     }
   )
-  filename = "../ansible/inventory/aws.yaml"
+    filename = "../ansible/inventory/aws_ec2.yaml"
 }
