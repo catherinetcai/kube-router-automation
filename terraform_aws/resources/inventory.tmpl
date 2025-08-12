@@ -1,19 +1,41 @@
-aws-controller ansible_host=${ controller } ansible_user=${ default_user } ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
-aws-worker ansible_host=${ worker } ansible_user=${ default_user } ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
-aws-bgp ansible_host=${ bgp } ansible_user=${ default_user } ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
+---
+# Ansible inventory using the AWS EC2 dynamic plugin
+# This file will dynamically discover EC2 instances.
 
-[container_runners]
-aws-controller
-aws-worker
+plugin: aws.ec2.aws_ec2
 
-[controllers]
-aws-controller
+# Use the same region as defined in your Terraform variables.
+regions:
+  - ${region}
 
-[leader]
-aws-controller
+# Use the AWS SSM connection plugin.
+# This requires the SSM Agent to be installed on the instances.
+ansible_connection: aws_ssm
 
-[workers]
-aws-worker
+# Set variables for all discovered hosts.
+compose:
+  ansible_user: ssm-user
+  ansible_python_interpreter: /usr/bin/python3
 
-[bgp_routers]
-aws-bgp
+# Filter instances to only include those with the 'type' tag,
+# which is applied in your main.tf configuration.
+filters:
+  tag:type:
+    - controller
+    - worker
+    - bgp
+
+# Create Ansible groups based on the value of the 'type' tag.
+# e.g., an instance with 'tag:type:controller' will be in the 'controller' group.
+keyed_groups:
+  - key: tags.type
+    prefix: ""
+    separator: ""
+
+# Create composite groups similar to your old static inventory.
+groups:
+  container_runners: "'controller' in (groups | default([])) or 'worker' in (groups | default([]))"
+  controllers: "'controller' in (groups | default([]))"
+  leader: "'controller' in (groups | default([]))"
+  workers: "'worker' in (groups | default([]))"
+  bgp_routers: "'bgp' in (groups | default([]))"

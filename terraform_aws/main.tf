@@ -27,6 +27,7 @@ locals {
           Name = "controller-root-block"
         }
       }
+      ssm_enabled = true
       tags = {
         Name = "aws-controller"
         type = "controller"
@@ -45,6 +46,7 @@ locals {
           Name = "worker-root-block"
         }
       }
+      ssm_enabled = true
       tags = {
         Name = "aws-worker"
         type = "worker"
@@ -63,6 +65,7 @@ locals {
           Name = "bgp-root-block"
         }
       }
+      ssm_enabled = true
       tags = {
         Name = "aws-bgp"
         type = "bgp"
