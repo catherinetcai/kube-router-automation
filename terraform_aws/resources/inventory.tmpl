@@ -27,8 +27,8 @@ keyed_groups:
     separator: ""
 
 groups:
-  container_runners: "'controller' in (groups | default([])) or 'worker' in (groups | default([]))"
-  controllers: "'controller' in (groups | default([]))"
-  leader: "'controller' in (groups | default([]))"
-  workers: "'worker' in (groups | default([]))"
-  bgp_routers: "'bgp' in (groups | default([]))"
+  container_runners: "tags.type == 'controller' or tags.type == 'worker'"
+  controllers: "tags.type == 'controller'" 
+  leader: "tags.type == 'controller'"
+  workers: "tags.type == 'worker'"
+  bgp_routers: "tags.type == 'bgp'"
