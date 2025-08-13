@@ -2,7 +2,7 @@
 - name: Wait for instance to be reachable via SSM
   ansible.builtin.shell: >
     aws ssm describe-instance-information
-    --filters "Key=InstanceIds,Values={{ inventory_hostname }}"
+    --filters "Key=InstanceIds,Values={{ ansible_aws_ssm_instance_id }}"
     --query "InstanceInformationList[0].PingStatus"
     --output text
   register: ssm_status

@@ -1,5 +1,4 @@
 ---
-
 # cloudinit / libvirt Terraform don't seem to set an acceptable hostname value and leave it as ubuntu. So let's set it
 - name: Set a Hostname
   hostname:

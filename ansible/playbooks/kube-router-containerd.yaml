@@ -67,7 +67,7 @@
       import_role:
         name: common
         tasks_from: wait_for_ssh
-      when: ansible_connection != "aws_ssm"
+      when: ansible_connection == "ssh"
 
 - name: Ensure IPv6 NAT Config
   hosts: localhost

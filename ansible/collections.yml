@@ -2,5 +2,7 @@
 collections:
   - name: amazon.aws
     version: "9.5.0"
+  - name: community.aws
+    version: "9.3.0"
   - name: ansible.posix
     version: "1.6.2"
