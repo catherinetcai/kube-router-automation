@@ -45,6 +45,9 @@ finished with the resources so that you don't continue to get charged.
 
   ```bash
   ansible-galaxy collection install -r ansible/collections.yml
+
+  # Install boto for AWS collection
+  pip install boto3
   ```
 
 * For libvirt: Ensure that `wget` and `qemu-img` commands are installed and
