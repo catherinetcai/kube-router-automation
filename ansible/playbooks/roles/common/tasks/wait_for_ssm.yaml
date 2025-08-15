@@ -1,13 +1,14 @@
 ---
 - name: Wait for instance to be reachable via SSM
-  ansible.builtin.shell: >
-    aws ssm describe-instance-information
-    --filters "Key=InstanceIds,Values={{ ansible_aws_ssm_instance_id }}"
-    --query "InstanceInformationList[0].PingStatus"
-    --output text
-  register: ssm_status
-  until: ssm_status.stdout == "Online"
-  retries: 30
-  delay: 10
-  changed_when: false
-  connection: local
+  ansible.builtin.wait_for_connection:
+  # ansible.builtin.shell: >
+  #   aws ssm describe-instance-information
+  #   --filters "Key=InstanceIds,Values={{ ansible_aws_ssm_instance_id }}"
+  #   --query "InstanceInformationList[0].PingStatus"
+  #   --output text
+  # register: ssm_status
+  # until: ssm_status.stdout == "Online"
+  # retries: 30
+  # delay: 10
+  # changed_when: false
+  # connection: local
