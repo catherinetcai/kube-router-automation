@@ -45,11 +45,15 @@ finished with the resources so that you don't continue to get charged.
 
   ```bash
   ansible-galaxy collection install -r ansible/collections.yml
-
-  # Install boto for AWS collection
-  pip install boto3
   ```
 
+* For aws: Ensure that boto is installed for the AWS ansible collections to work correctly:
+
+```sh
+pip install boto3
+```
+
+* For aws: Ensure that the AWS Session Manager [plugin is installed](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
 * For libvirt: Ensure that `wget` and `qemu-img` commands are installed and
   available on the host running terraform
 * For libvirt: Add the following to your `/etc/hosts` file so that the hosts are
