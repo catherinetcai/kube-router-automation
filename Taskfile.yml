@@ -34,12 +34,18 @@ tasks:
       - aws ssm start-session --target {{.INSTANCE_ID}}
 
   ansible:
+    vars:
+      RUNTIME: '{{.RUNTIME | default "containerd"}}'
+    requires:
+      vars:
+        - name: RUNTIME
+          enum: [containerd, crio]
     cmds:
       - |
         ansible-playbook -i ansible/inventory/aws_ec2.yaml \
           -e kube_router_docker_repo="{{.KUBE_ROUTER_DOCKER_REPO}}" \
           -e kube_router_version="{{.KUBE_ROUTER_VERSION}}" \
-          ansible/playbooks/kube-router-containerd.yaml {{.CLI_ARGS}}
+          ansible/playbooks/kube-router-{{.RUNTIME}}.yaml {{.CLI_ARGS}}
 
   ansible:inventory:
     cmds:
