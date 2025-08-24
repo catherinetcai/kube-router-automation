@@ -41,6 +41,20 @@ finished with the resources so that you don't continue to get charged.
 
 * [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 * [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+* Install Ansible collections
+
+  ```bash
+  ansible-galaxy collection install -r ansible/collections.yml
+  ```
+
+* For aws: Ensure that boto is installed for the AWS ansible collections to
+work correctly:
+
+```sh
+pip install boto3
+```
+
+* For aws: Ensure that the AWS Session Manager [plugin is installed](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
 * For libvirt: Ensure that `wget` and `qemu-img` commands are installed and
   available on the host running terraform
 * For libvirt: Add the following to your `/etc/hosts` file so that the hosts are
@@ -166,7 +180,6 @@ This is the image that you wish to use as your base Ubuntu image for running kub
   `ubuntu-minimal/images/hvm-ssd/ubuntu-jammy-*-amd64-minimal-*` -
   Allows you to set a filter for the AMI that you want to base your instances
   off of
-
 
 ### Ansible Variables
 
