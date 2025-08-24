@@ -158,7 +158,7 @@
       import_role:
         name: aws
         tasks_from: install_provider
-      when: ansible_connection == "aws_ssm"
+      when: ansible_system_vendor == "Amazon EC2"
 
 - name: Join Cluster with Remaining Nodes
   hosts: workers
