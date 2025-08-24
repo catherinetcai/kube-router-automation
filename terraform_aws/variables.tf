@@ -91,3 +91,8 @@ variable "ami_type" {
   type    = string
   default = "ubuntu"
 }
+
+variable "ansible_ssm_bucket_name" {
+  type    = string
+  default = "kube-router-aws-ssm-ansible"
+}

@@ -11,7 +11,7 @@ resource "aws_iam_role_policy_attachment" "ssm-worker-policy-attachment" {
 # S3 bucket required for the Ansible aws_ssm connection plugin to work: 
 # https://docs.ansible.com/ansible/latest/collections/community/aws/aws_ssm_connection.html#requirements
 resource "aws_s3_bucket" "ansible_ssm_bucket" {
-  bucket = "kube-router-aws-ssm-ansible"
+  bucket = var.ansible_ssm_bucket_name
 
   force_destroy = true
 }
