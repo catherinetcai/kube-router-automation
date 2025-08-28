@@ -4,6 +4,11 @@ variable "aws_key_name" {
   default = ""
 }
 
+variable "enable_ssm" {
+  type    = bool
+  default = true
+}
+
 variable "region" {
   type    = string
   default = "us-west-2"

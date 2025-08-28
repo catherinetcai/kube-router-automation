@@ -1,4 +1,5 @@
 resource "local_file" "ssh_config" {
+  count = var.enable_ssm ? 1 : 0
   depends_on = [
     aws_instance.kube-controller,
     aws_instance.kube-worker,

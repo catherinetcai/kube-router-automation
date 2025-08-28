@@ -1,3 +1,4 @@
+%{ if enable_ssm }
 plugin: amazon.aws.aws_ec2
 
 regions:
@@ -31,3 +32,24 @@ groups:
   leader: "tags.type == 'controller'"
   workers: "tags.type == 'worker'"
   bgp_routers: "tags.type == 'bgp'"
+%{ else }
+aws-controller ansible_host=$${controller} ansible_user=$${default_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
+aws-worker ansible_host=$${worker} ansible_user=$${default_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
+aws-bgp ansible_host=$${bgp} ansible_user=$${default_user} ansible_ssh_common_args='-o StrictHostKeyChecking=no' ansible_python_interpreter=/usr/bin/python3
+
+[container_runners]
+aws-controller
+aws-worker
+
+[controllers]
+aws-controller
+
+[leader]
+aws-controller
+
+[workers]
+aws-worker
+
+[bgp_routers]
+aws-bgp
+%{ endif }
