@@ -41,3 +41,4 @@ vars/*
 
 # Ignore aws inventories
 /ansible/inventory/aws_ec2.yaml
+/ansible/inventory/group_vars/aws_ec2

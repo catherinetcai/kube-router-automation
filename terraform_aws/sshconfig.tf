@@ -1,10 +1,5 @@
 resource "local_file" "ssh_config" {
-  count = var.enable_ssm ? 1 : 0
-  depends_on = [
-    aws_instance.kube-controller,
-    aws_instance.kube-worker,
-    aws_instance.bgp-receiver
-  ]
+  count = var.enable_ssm ? 0 : 1
   content = templatefile(
     "${path.module}/resources/ssh_config.tmpl",
     {
