@@ -1,0 +1,94 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  KUBE_ROUTER_DOCKER_REPO: ghcr.io/catherinetcai/kube-router
+  KUBE_ROUTER_VERSION: 9e320a07
+  # KUBE_ROUTER_DOCKER_REPO: cloudnativelabs/kube-router
+  # KUBE_ROUTER_VERSION: latest
+
+tasks:
+  docker:build:
+    sources:
+      - Dockerfile
+    cmds:
+      - docker buildx build --platform linux/amd64 -t ansible-runner .
+
+  docker:run:
+    deps:
+      - docker:build
+    interactive: true
+    cmds:
+      - |
+        docker run -it --rm \
+          -v $(pwd):/workspace \
+          -v ~/.aws:/root/.aws:ro \
+          -v ~/.ssh:/root/.ssh:ro \
+          -v ~/.ansible:/root/.ansible \
+          ansible-runner bash
+
+  ec2:list:
+    cmds:
+      - aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" --query "Reservations[].Instances[].{InstanceId:InstanceId, Name:Tags[?Key=='Name']|[0].Value, State:State.Name, PrivateIp:PrivateIpAddress, PublicIp:PublicIpAddress}"
+
+  ec2:ssm:
+    vars:
+      INSTANCE_ID: "{{.INSTANCE_ID}}"
+    cmds:
+      - |
+        aws ssm start-session --target {{.INSTANCE_ID}} \
+          --document-name "ConnectAsDefaultUser"
+
+  ansible:
+    vars:
+      RUNTIME: '{{.RUNTIME | default "containerd"}}'
+    requires:
+      vars:
+        - name: RUNTIME
+          enum: [containerd, crio]
+    cmds:
+      - |
+        ansible-playbook -i ansible/inventory/aws_ec2.yaml \
+          -e kube_router_docker_repo="{{.KUBE_ROUTER_DOCKER_REPO}}" \
+          -e kube_router_version="{{.KUBE_ROUTER_VERSION}}" \
+          ansible/playbooks/kube-router-{{.RUNTIME}}.yaml {{.CLI_ARGS}}
+
+  ansible:inventory:
+    cmds:
+      - ansible-inventory -i ansible/inventory
+
+  tf:init:
+    cmds:
+      - task: .tf:aws
+        vars:
+          TF_CMD: init
+
+  tf:plan:
+    cmds:
+      - task: .tf:aws
+        vars:
+          TF_CMD: plan
+          TF_ARGS: -var-file="../vars/terraform.tfvars"
+
+  tf:apply:
+    cmds:
+      - task: .tf:aws
+        vars:
+          TF_CMD: apply
+          TF_ARGS: -var-file="../vars/terraform.tfvars" -auto-approve
+
+  tf:destroy:
+    cmds:
+      - task: .tf:aws
+        vars:
+          TF_CMD: destroy
+          TF_ARGS: -var-file="../vars/terraform.tfvars" -auto-approve
+
+  .tf:aws:
+    dir: ./terraform_aws/
+    vars:
+      TF_CMD: '{{ .TF_CMD | default "" }}'
+      TF_ARGS: '{{ .TF_ARGS | default "" }}'
+    cmds:
+      - terraform {{.TF_CMD}} {{.TF_ARGS}}
