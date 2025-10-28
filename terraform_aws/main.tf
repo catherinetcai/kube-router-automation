@@ -216,9 +216,11 @@ resource "aws_instance" "kube-worker" {
     aws_iam_instance_profile.worker-profile
   ]
 
+  count = var.kube_worker_count
+
   ami                         = data.aws_ami.amazon_linux.id
   instance_type               = local.multiple_instances.worker.instance_type
-  key_name                    = var.aws_key_name
+  key_name                    = var.kube_worker_count == 1 ? var.aws_key_name : "${var.aws_key_name}-${var.kube_worker_count}"
   availability_zone           = local.multiple_instances.worker.availability_zone
   subnet_id                   = local.multiple_instances.worker.subnet_id
   iam_instance_profile        = local.multiple_instances.worker.iam_instance_profile
