@@ -8,6 +8,7 @@ data "aws_iam_policy_document" "control-plane-pol-document" {
       "autoscaling:DescribeTags",
       "ec2:DescribeInstances",
       "ec2:DescribeRegions",
+      "ec2:DescribeAvailabilityZones",
       "ec2:DescribeRouteTables",
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSubnets",
