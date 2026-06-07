@@ -15,6 +15,17 @@ log syslog informational
 # Puts all configuration into this single frr.conf file rather than having a separate config per daemon
 service integrated-vtysh-config
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Basic BFD config
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+bfd
+  # Add peers
+{% for peer in bgp_peers %}
+  peer {{hostvars[peer].ansible_default_ipv4.address}}
+    no shutdown
+  !
+{% endfor %}
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Basic BGP config to setup neighbors and peer groups
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 router bgp {{ bgp_asn }}
