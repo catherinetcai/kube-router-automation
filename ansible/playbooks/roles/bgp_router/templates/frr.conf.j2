@@ -14,6 +14,7 @@ log syslog informational
 !
 # Puts all configuration into this single frr.conf file rather than having a separate config per daemon
 service integrated-vtysh-config
+{% if enable_bfd | bool %}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Basic BFD config
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -28,6 +29,7 @@ bfd
   !
 {% endfor %}
 !
+{% endif %}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Basic BGP config to setup neighbors and peer groups
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -53,7 +55,9 @@ router bgp {{ bgp_asn }}
   # Add peers
 {% for peer in bgp_peers %}
   {{ "neighbor " + hostvars[peer].ansible_facts['default_ipv4'].address + " peer-group kubepeers" }}
+{% if enable_bfd | bool %}
   {{ "neighbor " + hostvars[peer].ansible_facts['default_ipv4'].address + " bfd" }}
+{% endif %}
 {% endfor %}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Configure IPv4 family

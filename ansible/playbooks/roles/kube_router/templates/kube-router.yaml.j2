@@ -89,7 +89,7 @@ spec:
         {%- endif %}
         - --loadbalancer-ip-range={{ loadbalancer_ip_range.ipv4 }}
         {%- endif %}
-        {% if enable_bfd is defined %}
+        {%- if enable_bfd | bool %}
         - --enable-bfd
         {%- endif %}
         - --service-external-ip-range={{ external_ip_range.ipv4 }}
