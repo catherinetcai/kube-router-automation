@@ -20,7 +20,10 @@ service integrated-vtysh-config
 bfd
   # Add peers
 {% for peer in bgp_peers %}
-  peer {{hostvars[peer].ansible_default_ipv4.address}}
+  peer {{ hostvars[peer].ansible_facts['default_ipv4'].address }}
+    detect-multiplier 3
+    transmit-interval 100
+    receive-interval 100
     no shutdown
   !
 {% endfor %}
@@ -50,6 +53,7 @@ router bgp {{ bgp_asn }}
   # Add peers
 {% for peer in bgp_peers %}
   {{ "neighbor " + hostvars[peer].ansible_facts['default_ipv4'].address + " peer-group kubepeers" }}
+  {{ "neighbor " + hostvars[peer].ansible_facts['default_ipv4'].address + " bfd" }}
 {% endfor %}
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Configure IPv4 family

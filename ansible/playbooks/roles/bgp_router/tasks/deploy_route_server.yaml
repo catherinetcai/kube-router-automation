@@ -21,6 +21,7 @@
     path: /etc/frr/daemons
     regexp: "^bfdd"
     line: bfdd=yes
+  when: enable_bfd
 
 - name: Template FRR Configuration File
   vars:
